@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "avere-admin",
+    "Hosting": "crafteria-admin"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

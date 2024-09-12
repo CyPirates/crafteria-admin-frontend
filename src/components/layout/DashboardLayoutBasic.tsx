@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { createTheme } from "@mui/material/styles";
@@ -18,16 +18,16 @@ const NAVIGATION: Navigation = [
     { segment: "dashboard", title: "대쉬보드", icon: <DashboardIcon /> },
     { segment: "orders", title: "주문 관리", icon: <ShoppingCartIcon /> },
     { kind: "divider" },
-    { kind: "header", title: "Analytics" },
-    {
-        segment: "reports",
-        title: "Reports",
-        icon: <BarChartIcon />,
-        children: [
-            { segment: "sales", title: "Sales", icon: <DescriptionIcon /> },
-            { segment: "traffic", title: "Traffic", icon: <DescriptionIcon /> },
-        ],
-    },
+    // { kind: "header", title: "Analytics" },
+    // {
+    //     segment: "reports",
+    //     title: "Reports",
+    //     icon: <BarChartIcon />,
+    //     children: [
+    //         { segment: "sales", title: "Sales", icon: <DescriptionIcon /> },
+    //         { segment: "traffic", title: "Traffic", icon: <DescriptionIcon /> },
+    //     ],
+    // },
 ];
 
 const demoTheme = createTheme({
@@ -44,30 +44,6 @@ const demoTheme = createTheme({
     },
 });
 
-function Sales() {
-    return (
-        <Box sx={{ py: 4, textAlign: "center" }}>
-            <Typography variant="h4">Sales Content</Typography>
-        </Box>
-    );
-}
-
-function Traffic() {
-    return (
-        <Box sx={{ py: 4, textAlign: "center" }}>
-            <Typography variant="h4">Traffic Content</Typography>
-        </Box>
-    );
-}
-
-function Integrations() {
-    return (
-        <Box sx={{ py: 4, textAlign: "center" }}>
-            <Typography variant="h4">Integrations Content</Typography>
-        </Box>
-    );
-}
-
 function DemoPageContent() {
     const location = useLocation();
     const pathname = location.pathname;
@@ -83,12 +59,9 @@ function DemoPageContent() {
             }}
         >
             <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" />} />
                 <Route path="/dashboard" element={<HomePage />} />
                 <Route path="/orders" element={<ManageOrderPage />} />
-                <Route path="/reports/sales" element={<Sales />} />
-                <Route path="/reports/traffic" element={<Traffic />} />
-                <Route path="/integrations" element={<Integrations />} />
-                <Route path="*" element={<Typography variant="h6">404 Not Found</Typography>} />
             </Routes>
         </Box>
     );

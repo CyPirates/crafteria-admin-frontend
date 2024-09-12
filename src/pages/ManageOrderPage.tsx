@@ -15,11 +15,7 @@ const ManageOrderPage = () => {
 
     const getOrderList = async () => {
         try {
-            const response = await newAxios.get("/api/v1/order/manufacturer/2/orders", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
+            const response = await newAxios.get("/api/v1/order/manufacturer/2/orders");
             let orderList = response.data.data;
             setOrderList(orderList);
         } catch (e) {

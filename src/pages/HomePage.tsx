@@ -18,11 +18,7 @@ const HomePage = () => {
     useEffect(() => {
         const getCompanyData = async () => {
             try {
-                const response = await newAxios.get("/api/v1/manufacturers/2", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
+                const response = await newAxios.get("/api/v1/manufacturers/2");
                 let fetchedData = response.data.data;
                 console.log(fetchedData);
                 setData(fetchedData);

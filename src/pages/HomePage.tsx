@@ -5,22 +5,23 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { useEffect, useState } from "react";
 import { newAxios } from "../utils/newAxios";
-import { Company } from "../types/CompanyType";
+import { Company, Equipment } from "../types/CompanyType";
 import { Typography } from "@mui/material";
 import useClassifiedOrderList from "../hooks/useClassifiedOrderList";
 import { Order } from "../types/OrderType";
+import EquipmentDataGrid from "../components/specific/homepage/EquipmentDataGrid";
 
 const HomePage = () => {
     const [data, setData] = useState<Company>();
     const [orderList, setOrderList] = useState<Order[]>([]);
+
     const { ordered, inProducting, delivered, canceled } = useClassifiedOrderList({ orderList });
 
     useEffect(() => {
         const getCompanyData = async () => {
             try {
-                const response = await newAxios.get("/api/v1/manufacturers/2");
+                const response = await newAxios.get("/api/v1/manufacturers/3");
                 let fetchedData = response.data.data;
-                console.log(fetchedData);
                 setData(fetchedData);
             } catch (e) {
                 console.log(e);
@@ -29,11 +30,7 @@ const HomePage = () => {
 
         const getOrderList = async () => {
             try {
-                const response = await newAxios.get("/api/v1/order/manufacturer/2/orders", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
+                const response = await newAxios.get("/api/v1/order/manufacturer/3/orders");
                 let orderList = response.data.data;
                 setOrderList(orderList);
             } catch (e) {
@@ -72,7 +69,7 @@ const HomePage = () => {
                 <Grid size={12}>
                     <OrderStatusColntainer>
                         <Category>
-                            <BigText>제작 주문 현황</BigText>
+                            <BigText>주문 / 출력 현황</BigText>
                         </Category>
                         <StatusCardsContainer>
                             <StatusCard>
@@ -93,11 +90,14 @@ const HomePage = () => {
                     </OrderStatusColntainer>
                 </Grid>
 
-                <Grid size={6}>
-                    <HalfWidthCard>asdf</HalfWidthCard>
+                <Grid size={12}>
+                    <StyledCard>도표 자리</StyledCard>
                 </Grid>
-                <Grid size={6}>
-                    <HalfWidthCard>asdf</HalfWidthCard>
+                <Grid size={12}>
+                    <Category>
+                        <BigText>장비 목록</BigText>
+                    </Category>
+                    <EquipmentDataGrid />
                 </Grid>
             </Grid>
         </Box>

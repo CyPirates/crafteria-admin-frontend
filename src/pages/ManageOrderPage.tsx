@@ -15,7 +15,7 @@ const ManageOrderPage = () => {
 
     const getOrderList = async () => {
         try {
-            const response = await newAxios.get("/api/v1/order/manufacturer/2/orders");
+            const response = await newAxios.get("/api/v1/order/manufacturer/3/orders");
             let orderList = response.data.data;
             setOrderList(orderList);
         } catch (e) {

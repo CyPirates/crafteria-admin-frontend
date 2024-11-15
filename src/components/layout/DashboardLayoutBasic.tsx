@@ -70,7 +70,7 @@ function DemoPageContent() {
 export default function DashboardLayoutBasic() {
     return (
         <Router>
-            <AppProvider navigation={NAVIGATION} theme={demoTheme} branding={{ title: "Crafteria", logo: null }}>
+            <AppProvider navigation={NAVIGATION} theme={demoTheme} branding={{ title: "Crafteria-Admin", logo: null }}>
                 <DashboardLayout>
                     <DemoPageContent />
                 </DashboardLayout>

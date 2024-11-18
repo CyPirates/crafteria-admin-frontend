@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { useEffect, useState } from "react";
 import { newAxios } from "../utils/newAxios";
-import { Company, Equipment } from "../types/CompanyType";
+import { Company } from "../types/CompanyType";
 import { Typography } from "@mui/material";
 import useClassifiedOrderList from "../hooks/useClassifiedOrderList";
 import { Order } from "../types/OrderType";
@@ -192,9 +192,4 @@ const Divider = styled(Box)`
     width: 1px;
     background-color: #e6e6e6;
     height: 100%; // 전체 높이에 맞추기
-`;
-
-const HalfWidthCard = styled(StyledCard)`
-    width: 100%;
-    aspect-ratio: 1/1;
 `;

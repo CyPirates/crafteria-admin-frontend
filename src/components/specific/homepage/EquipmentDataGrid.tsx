@@ -1,16 +1,59 @@
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
-import React from "react";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel"; // Cancel 아이콘 추가
+import DeleteIcon from "@mui/icons-material/Delete";
+import UploadIcon from "@mui/icons-material/Upload";
+import {
+    DataGrid,
+    GridActionsCellItem,
+    GridColDef,
+    GridEventListener,
+    GridRowModel,
+    GridRowModes,
+    GridRowModesModel,
+    GridRowsProp,
+    GridSlots,
+    GridToolbarContainer,
+    GridRowEditStopReasons,
+} from "@mui/x-data-grid";
 import { newAxios } from "../../../utils/newAxios";
 import { Equipment } from "../../../types/CompanyType";
-import { width } from "@mui/system";
+import { convertUrlToFileList } from "../../../utils/convertUrlToFile";
+
+interface EditToolbarProps {
+    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+    setRowModesModel: (newModel: (oldModel: GridRowModesModel) => GridRowModesModel) => void;
+}
+
+function EditToolbar(props: EditToolbarProps) {
+    const { setRows, setRowModesModel } = props;
+
+    const handleClick = () => {
+        setRows((oldRows) => [...oldRows, { id: "N/A", name: "", status: "Available", imageFileUrl: "", file: null, isNew: true }]);
+        setRowModesModel((oldModel) => ({
+            ...oldModel,
+            ["N/A"]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+        }));
+    };
+
+    return (
+        <GridToolbarContainer>
+            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                Add Equipment
+            </Button>
+        </GridToolbarContainer>
+    );
+}
 
 const EquipmentDataGrid = () => {
-    const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
-    const [equipmentList, setEquipmentList] = useState<Equipment[]>([]);
-
+    const [rows, setRows] = useState<GridRowsProp>([]);
+    const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+    const [targetRow, setTargetRow] = useState<GridRowModel | null>(null);
     useEffect(() => {
         getEquipmentList();
     }, []);
@@ -18,15 +61,75 @@ const EquipmentDataGrid = () => {
     const getEquipmentList = async () => {
         try {
             const response = await newAxios.get("/api/v1/equipment/manufacturer/3");
-            let equipmentList = response.data.data;
-            console.log(equipmentList);
-            setEquipmentList(equipmentList);
+            const equipmentList = response.data.data;
+            setRows(
+                equipmentList.map((e: Equipment) => ({
+                    id: e.id,
+                    name: e.name,
+                    status: e.status,
+                    imageFileUrl: e.imageFileUrl,
+                }))
+            );
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     };
 
-    const handleDelete = async (id: string) => {
+    const handleEditClick = (id: string) => {
+        setRowModesModel((oldModel) => ({
+            ...oldModel,
+            [id]: { mode: GridRowModes.Edit },
+        }));
+    };
+
+    const handleSaveClick = async (id: string) => {
+        setRowModesModel((oldModel) => ({
+            ...oldModel,
+            [id]: { mode: GridRowModes.View },
+        }));
+    };
+
+    const postEquipmentData = async (target: GridRowModel | null) => {
+        console.log("보내는놈:", target);
+        if (target === null) return;
+
+        const formData = new FormData();
+        formData.append("name", target.name); // 이름 추가
+        formData.append("manufacturerId", "3");
+
+        // 이미지 처리: URL 또는 파일 모두 image로 추가
+        if (target!.file) {
+            formData.append("image", target.file); // 신규 업로드된 파일
+        } else if (target.imageFileUrl) {
+            const imageFile = await convertUrlToFileList(target.imageFileUrl);
+            formData.append("image", imageFile); // 기존 URL
+        }
+
+        try {
+            if (target.id === "N/A") {
+                // 신규 항목 저장
+                await newAxios.post("/api/v1/equipment", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+            } else {
+                // 기존 항목 수정
+                await newAxios.put(`/api/v1/equipment/${target.id}`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+            }
+            // 데이터 갱신
+            console.log("Saved successfully");
+            getEquipmentList();
+        } catch (error) {
+            console.error("Error saving equipment:", error);
+        }
+    };
+
+    useEffect(() => {
+        postEquipmentData(targetRow);
+    }, [targetRow]);
+
+    const handleDeleteClick = async (id: string) => {
         try {
             await newAxios.delete(`/api/v1/equipment/${id}`);
             getEquipmentList();
@@ -35,63 +138,110 @@ const EquipmentDataGrid = () => {
         }
     };
 
-    const handleStatusChange = async (id: string, status: string) => {
-        try {
-            let nextStatus;
-            status == "Available" ? (nextStatus = "InUse") : (nextStatus = "Available");
-            await newAxios.patch(`/api/v1/equipment/${id}/status?status=${nextStatus}`);
-            getEquipmentList();
-        } catch (e) {
-            console.log(e);
+    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setRows((oldRows) => oldRows.map((row) => (row.id === id ? { ...row, imageFileUrl: reader.result as string, file } : row)));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
-    const rows = equipmentList.map((e) => ({
-        id: e.id,
-        name: e.name,
-        status: e.status,
-        imageFileUrl: e.imageFileUrl,
-    }));
+    const handleCancelClick = (id: string) => {
+        setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+        });
+
+        const editedRow = rows.find((row) => row.id === id);
+        if (editedRow!.isNew) {
+            setRows(rows.filter((row) => row.id !== id));
+        }
+    };
+
+    const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+        setRowModesModel(newRowModesModel);
+    };
+    const processRowUpdate = (newRow: GridRowModel) => {
+        // 업데이트된 행을 즉시 상태에 반영
+        console.log("Processing row update:", newRow);
+        setTargetRow(newRow); // 새로운 행을 targetRow에 저장
+        setRows((oldRows) => oldRows.map((row) => (row.id === newRow.id ? { ...newRow, isNew: false } : row)));
+        return { ...newRow, isNew: false }; // 반환값에 새로운 값 포함
+    };
+    const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
+        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+            event.defaultMuiPrevented = true;
+        }
+    };
 
     const columns: GridColDef[] = [
-        { field: "id", headerName: "장비ID" },
+        { field: "id", headerName: "장비ID", width: 150, editable: false },
         {
             field: "name",
             headerName: "장비명",
+            width: 200,
+            editable: true,
         },
         {
             field: "imageFileUrl",
             headerName: "이미지",
             width: 170,
-            renderCell: (params) => (
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}>
-                    <img src={params.value} alt="Equipment" style={{ width: 150, height: 150 }} />
-                </Box>
-            ),
+            renderCell: (params) => {
+                const hasImage = !!params.row.imageFileUrl;
+
+                return hasImage ? (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "100%",
+                            height: "100%",
+                        }}
+                    >
+                        <img src={params.row.imageFileUrl} alt="Uploaded" style={{ width: 150, height: 150 }} />
+                    </Box>
+                ) : (
+                    <Box>
+                        <input accept="image/*" id={`upload-${params.id}`} type="file" style={{ display: "none" }} onChange={(e) => handleFileUpload(e, params.id as string)} />
+                        <label htmlFor={`upload-${params.id}`}>
+                            <Button variant="contained" startIcon={<UploadIcon />} component="span">
+                                업로드
+                            </Button>
+                        </label>
+                    </Box>
+                );
+            },
         },
         {
             field: "status",
             headerName: "상태",
+            width: 150,
             renderCell: (params) => <div>{params.value === "Available" ? "대기중" : "출력중"}</div>,
         },
         {
-            field: "statusChange",
-            headerName: "상태 관리",
+            field: "actions",
+            type: "actions",
+            headerName: "Actions",
             width: 150,
-            renderCell: (params) => (
-                <Button variant="contained" onClick={() => handleStatusChange(params.row.id, params.row.status)}>
-                    {params.row.status === "Available" ? "출력 시작" : "출력 완료"}
-                </Button>
-            ),
-        },
-        {
-            field: "delete",
-            headerName: "삭제",
-            renderCell: (params) => (
-                <Button variant="contained" onClick={() => handleDelete(params.row.id)}>
-                    삭제
-                </Button>
-            ),
+            getActions: (params) => {
+                const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
+
+                if (isInEditMode) {
+                    return [
+                        <GridActionsCellItem icon={<SaveIcon />} label="Save" onClick={() => handleSaveClick(params.id as string)} />,
+                        <GridActionsCellItem icon={<CancelIcon />} label="Cancel" onClick={() => handleCancelClick(params.id as string)} />,
+                    ];
+                }
+
+                return [
+                    <GridActionsCellItem icon={<EditIcon />} label="Edit" onClick={() => handleEditClick(params.id as string)} />,
+                    <GridActionsCellItem icon={<DeleteIcon />} label="Delete" onClick={() => handleDeleteClick(params.id as string)} />,
+                ];
+            },
         },
     ];
 
@@ -100,7 +250,6 @@ const EquipmentDataGrid = () => {
             <DataGrid
                 rows={rows}
                 columns={columns}
-                rowHeight={150}
                 initialState={{
                     pagination: {
                         paginationModel: {
@@ -108,12 +257,18 @@ const EquipmentDataGrid = () => {
                         },
                     },
                 }}
-                pageSizeOptions={[10]}
-                onRowSelectionModelChange={(newRowSelectionModel) => {
-                    setRowSelectionModel(newRowSelectionModel);
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                //onStateChange={(e) => console.log(e)}
+                slots={{
+                    toolbar: EditToolbar as GridSlots["toolbar"],
                 }}
-                rowSelectionModel={rowSelectionModel}
-                disableRowSelectionOnClick
+                slotProps={{
+                    toolbar: { setRows, setRowModesModel },
+                }}
             />
         </Box>
     );

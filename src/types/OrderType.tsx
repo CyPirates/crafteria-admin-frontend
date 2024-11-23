@@ -10,7 +10,7 @@ export type Order = {
     quantity: string;
     deliveryAddress: string;
     status: string;
-    modelFileUrl: string;
+    modelFileUrls: string[];
 };
 
 export type ClassifiedOrderList = {

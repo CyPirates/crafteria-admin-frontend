@@ -13,10 +13,12 @@ import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import type { Navigation } from "@toolpad/core";
 import HomePage from "../../pages/HomePage";
 import ManageOrderPage from "../../pages/ManageOrderPage";
+import ManageReviewPage from "../../pages/ManageReviewPage";
 
 const NAVIGATION: Navigation = [
     { segment: "dashboard", title: "대쉬보드", icon: <DashboardIcon /> },
     { segment: "orders", title: "주문 관리", icon: <ShoppingCartIcon /> },
+    { segment: "reviews", title: "리뷰 관리", icon: <DescriptionIcon /> },
     { kind: "divider" },
     // { kind: "header", title: "Analytics" },
     // {
@@ -62,6 +64,7 @@ function DemoPageContent() {
                 <Route path="/" element={<Navigate to="/dashboard" />} />
                 <Route path="/dashboard" element={<HomePage />} />
                 <Route path="/orders" element={<ManageOrderPage />} />
+                <Route path="/reviews" element={<ManageReviewPage />} />
             </Routes>
         </Box>
     );

@@ -10,6 +10,7 @@ import { Typography } from "@mui/material";
 import useClassifiedOrderList from "../hooks/useClassifiedOrderList";
 import { Order } from "../types/OrderType";
 import EquipmentDataGrid from "../components/specific/homepage/EquipmentDataGrid";
+import SalesChart from "../components/specific/homepage/SalesChart";
 
 const HomePage = () => {
     const [data, setData] = useState<Company>();
@@ -91,7 +92,9 @@ const HomePage = () => {
                 </Grid>
 
                 <Grid size={12}>
-                    <StyledCard>도표 자리</StyledCard>
+                    <StyledCard>
+                        <SalesChart />
+                    </StyledCard>
                 </Grid>
                 <Grid size={12}>
                     <Category>

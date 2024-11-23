@@ -1,4 +1,4 @@
-export const convertUrlToFileList = async (imageUrl: string) => {
+export const convertImageUrlToFile = async (imageUrl: string) => {
     const response = await fetch(imageUrl);
     if (!response.ok) {
         throw new Error("이미지를 받을 수 없습니다.");
@@ -14,3 +14,10 @@ export const convertUrlToFileList = async (imageUrl: string) => {
     // dataTransfer.items.add(file);
     // return dataTransfer.files;
 };
+
+// export const convertImageUrlToFile = async (imageUrl: string, fileName: string): Promise<File> => {
+//     const response = await fetch(imageUrl);
+//     const blob = await response.blob(); // Blob으로 변환
+//     console.log("asd: " + blob);
+//     return new File([blob], fileName, { type: blob.type }); // File 객체 생성
+// };

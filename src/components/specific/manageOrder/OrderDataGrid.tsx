@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@mui/material";
 import React from "react";
 import { newAxios } from "../../../utils/newAxios";
+import { Link } from "react-router-dom";
 
 type OrderList = {
     data: Order[];
@@ -19,7 +20,7 @@ const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
     const rows = data.map((order) => ({
         id: order.orderId,
         size: `${order.widthSize} x ${order.lengthSize} x ${order.heightSize}`,
-        fileLink: order.modelFileUrl,
+        fileLink: order.modelFileUrls,
         magnification: order.magnification,
         quantity: order.quantity,
         price: `${order.purchasePrice}원`,
@@ -30,7 +31,7 @@ const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
         const statusList = ["IN_PRODUCTING", "DELIVERED"];
         const nextStatus = statusList[status];
         try {
-            const response = await newAxios.post(`/api/v1/order/manufacturer/change-status/${id}?manufacturerId=2&newStatusKey=${nextStatus}`);
+            const response = await newAxios.post(`/api/v1/order/manufacturer/change-status/${id}?manufacturerId=3&newStatusKey=${nextStatus}`);
             console.log(response.data.data);
         } catch (e) {
             console.log(e);
@@ -48,7 +49,7 @@ const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
     };
 
     return (
-        <Box sx={{}}>
+        <Box sx={{ width: "1200px" }}>
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -77,41 +78,37 @@ const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
 };
 
 const columns: GridColDef[] = [
-    { field: "id", headerName: "주문번호", width: 100 },
+    { field: "id", headerName: "주문번호", width: 80 },
     {
         field: "size",
         headerName: "크기(mm)",
-        width: 170,
+        width: 200,
     },
     {
         field: "magnification",
         headerName: "배율",
-        width: 50,
+        width: 100,
     },
     {
         field: "quantity",
         headerName: "수량",
-        width: 50,
+        width: 100,
     },
     {
         field: "price",
         headerName: "가격",
-        width: 110,
+        width: 100,
     },
     {
         field: "address",
         headerName: "배송지",
-        width: 300,
+        flex: 1,
     },
     {
         field: "fileLink",
         headerName: "파일",
         width: 100,
-        renderCell: (params) => (
-            <a href={params.value} target="_blank" rel="noopener noreferrer">
-                다운로드
-            </a>
-        ),
+        renderCell: (params) => <Link to={params.value[0]}>다운로드</Link>,
     },
 ];
 

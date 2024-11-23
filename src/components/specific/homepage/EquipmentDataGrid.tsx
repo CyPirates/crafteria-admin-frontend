@@ -23,7 +23,7 @@ import {
 } from "@mui/x-data-grid";
 import { newAxios } from "../../../utils/newAxios";
 import { Equipment } from "../../../types/CompanyType";
-import { convertUrlToFileList } from "../../../utils/convertUrlToFile";
+import { convertImageUrlToFile } from "../../../utils/convertUrlToFile";
 
 interface EditToolbarProps {
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -44,7 +44,7 @@ function EditToolbar(props: EditToolbarProps) {
     return (
         <GridToolbarContainer>
             <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Add Equipment
+                장비 추가
             </Button>
         </GridToolbarContainer>
     );
@@ -90,7 +90,6 @@ const EquipmentDataGrid = () => {
     };
 
     const postEquipmentData = async (target: GridRowModel | null) => {
-        console.log("보내는놈:", target);
         if (target === null) return;
 
         const formData = new FormData();
@@ -101,8 +100,11 @@ const EquipmentDataGrid = () => {
         if (target!.file) {
             formData.append("image", target.file); // 신규 업로드된 파일
         } else if (target.imageFileUrl) {
-            const imageFile = await convertUrlToFileList(target.imageFileUrl);
-            formData.append("image", imageFile); // 기존 URL
+            // const response = await fetch(target.imageFileUrl);
+            // const file = await response.blob();
+            // formData.append("image", file);
+            const imageFile = await convertImageUrlToFile(target.imageFileUrl);
+            //formData.append("image", imageFile);
         }
 
         try {
@@ -130,11 +132,20 @@ const EquipmentDataGrid = () => {
     }, [targetRow]);
 
     const handleDeleteClick = async (id: string) => {
+        const confirmed = window.confirm("정말 삭제하시겠습니까?"); // 경고창 표시
+        if (!confirmed) return; // 사용자가 취소를 선택한 경우 함수 종료
+
         try {
+            // 로컬 상태에서 먼저 제거
+            setRows((oldRows) => oldRows.filter((row) => row.id !== id));
+
+            // 서버에서 삭제 요청
             await newAxios.delete(`/api/v1/equipment/${id}`);
+
+            // 필요 시 서버 상태를 다시 동기화
             getEquipmentList();
         } catch (e) {
-            console.log(e);
+            console.error("Error deleting equipment:", e);
         }
     };
 
@@ -219,9 +230,33 @@ const EquipmentDataGrid = () => {
         {
             field: "status",
             headerName: "상태",
-            width: 150,
+            width: 60,
             renderCell: (params) => <div>{params.value === "Available" ? "대기중" : "출력중"}</div>,
         },
+        {
+            field: "handleStatus",
+            headerName: "",
+            width: 96,
+            renderCell: (params) => {
+                const handleStatusChange = async () => {
+                    try {
+                        const newStatus = params.row.status === "Available" ? "InUse" : "Available"; // 상태 변경 로직
+                        await newAxios.patch(`/api/v1/equipment/${params.row.id}/status?status=${newStatus}`); // 상태 업데이트 API 호출
+                        setRows((oldRows) => oldRows.map((row) => (row.id === params.row.id ? { ...row, status: newStatus } : row)));
+                    } catch (error) {
+                        console.error("Failed to change status:", error);
+                    }
+                };
+                if (params.row.id === "N/A") return null;
+
+                return (
+                    <Button variant="contained" size="small" color={params.row.status === "Available" ? "primary" : "secondary"} onClick={handleStatusChange}>
+                        {params.row.status === "Available" ? "출력시작" : "출력완료"}
+                    </Button>
+                );
+            },
+        },
+
         {
             field: "actions",
             type: "actions",
@@ -253,7 +288,7 @@ const EquipmentDataGrid = () => {
                 initialState={{
                     pagination: {
                         paginationModel: {
-                            pageSize: 5,
+                            pageSize: 10,
                         },
                     },
                 }}

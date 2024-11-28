@@ -14,6 +14,7 @@ import type { Navigation } from "@toolpad/core";
 import HomePage from "../../pages/HomePage";
 import ManageOrderPage from "../../pages/ManageOrderPage";
 import ManageReviewPage from "../../pages/ManageReviewPage";
+import Logo from "../../assets/logo.png";
 
 const NAVIGATION: Navigation = [
     { segment: "dashboard", title: "대쉬보드", icon: <DashboardIcon /> },
@@ -73,7 +74,32 @@ function DemoPageContent() {
 export default function DashboardLayoutBasic() {
     return (
         <Router>
-            <AppProvider navigation={NAVIGATION} theme={demoTheme} branding={{ title: "Crafteria-Admin", logo: null }}>
+            <AppProvider
+                navigation={NAVIGATION}
+                theme={demoTheme}
+                branding={{
+                    title: "",
+                    logo: (
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center", // 상하 가운데 정렬
+                                justifyContent: "center", // 좌우 가운데 정렬 (옵션)
+                                height: "100%", // 부모 컨테이너 높이를 따라감
+                            }}
+                        >
+                            <img
+                                src={Logo}
+                                alt="Crafteria Logo"
+                                style={{
+                                    height: "80px", // 원하는 높이
+                                    maxHeight: "none", // 제한 해제
+                                }}
+                            />
+                        </div>
+                    ),
+                }}
+            >
                 <DashboardLayout>
                     <DemoPageContent />
                 </DashboardLayout>

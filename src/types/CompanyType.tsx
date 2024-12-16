@@ -6,7 +6,7 @@ export type Company = {
     dialNumber: string;
     productionCount: string;
     rating: string;
-    representativceEquipment: string;
+    representativeEquipment: string;
     imageFileUrl: string;
     equipmentList: Equipment[];
 };

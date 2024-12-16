@@ -6,15 +6,17 @@ import Grid from "@mui/material/Grid2";
 import { useEffect, useState } from "react";
 import { newAxios } from "../utils/newAxios";
 import { Company } from "../types/CompanyType";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import useClassifiedOrderList from "../hooks/useClassifiedOrderList";
 import { Order } from "../types/OrderType";
 import EquipmentDataGrid from "../components/specific/homepage/EquipmentDataGrid";
 import SalesChart from "../components/specific/homepage/SalesChart";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
     const [data, setData] = useState<Company>();
     const [orderList, setOrderList] = useState<Order[]>([]);
+    const navigate = useNavigate();
 
     const { ordered, inProducting, delivered, canceled } = useClassifiedOrderList({ orderList });
 
@@ -51,7 +53,7 @@ const HomePage = () => {
                         <ImageWrapper>
                             <CardMedia component="img" sx={{ width: "100%", height: "100%", objectFit: "cover" }} image={data?.imageFileUrl} alt="profile-image" />
                         </ImageWrapper>
-                        <TextContainer>
+                        <InfoContainer>
                             <CompanyName>{data?.name}</CompanyName>
                             <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "16px" }}>
                                 {data?.introduction}
@@ -62,7 +64,28 @@ const HomePage = () => {
                             <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "16px" }}>
                                 전화번호: {data?.dialNumber}
                             </Typography>
-                        </TextContainer>
+                            <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "16px" }}>
+                                대표장비: {data?.representativeEquipment}
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() =>
+                                    navigate("/edit-info", {
+                                        state: {
+                                            imageUrl: data?.imageFileUrl,
+                                            name: data?.name,
+                                            introduction: data?.introduction,
+                                            address: data?.address,
+                                            dialNumber: data?.dialNumber,
+                                            representativeEquipment: data?.representativeEquipment,
+                                        },
+                                    })
+                                }
+                            >
+                                수정하기
+                            </Button>
+                        </InfoContainer>
                     </OutlineBox>
                 </Grid>
 
@@ -93,6 +116,9 @@ const HomePage = () => {
 
                 <Grid size={12}>
                     <StyledCard>
+                        <Category>
+                            <BigText>통계</BigText>
+                        </Category>
                         <SalesChart />
                     </StyledCard>
                 </Grid>
@@ -134,14 +160,15 @@ const ImageWrapper = styled(Box)`
     justify-content: center;
 `;
 
-const TextContainer = styled(Box)`
+const InfoContainer = styled(Box)`
     margin-left: 2%;
     height: 100%;
-    gap: 20px;
+    gap: 10px;
 
     display: flex;
     flex-direction: column;
     align-items: start;
+    justify-content: space-between;
 `;
 
 const CompanyName = styled(Typography)`

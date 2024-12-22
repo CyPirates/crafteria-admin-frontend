@@ -13,6 +13,7 @@ import ManageReviewPage from "../../pages/ManageReviewPage";
 import Logo from "../../assets/logo.png";
 import LoginPage from "../../pages/LoginPage";
 import EditCompanyInfoPage from "../../pages/EditCompanyInfoPage";
+import SignUpPage from "../../pages/SignUpPage";
 
 const NAVIGATION: Navigation = [
     { segment: "dashboard", title: "대쉬보드", icon: <DashboardIcon /> },
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Routes>
             {/* LoginPage는 DashboardLayout 외부에서 렌더링 */}
             <Route path="/" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
             {/* DashboardLayout에 포함되는 라우트 */}
             <Route
                 path="/*"

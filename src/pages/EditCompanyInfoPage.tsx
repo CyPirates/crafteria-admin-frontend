@@ -56,7 +56,7 @@ const EditCompanyInfoPage = () => {
         }
 
         try {
-            const response = await newAxios.put(`/api/v1/manufacturers/${3}`, submittedData, { headers: { "Content-Type": "multipart/form-data" } });
+            const response = await newAxios.put(`/api/v1/manufacturers/${4}`, submittedData, { headers: { "Content-Type": "multipart/form-data" } });
             console.log(response.data);
             navigate("/dashboard");
         } catch (e) {

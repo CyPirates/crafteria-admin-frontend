@@ -8,16 +8,18 @@ import { Typography } from "@mui/material";
 import useClassifiedOrderList from "../hooks/useClassifiedOrderList";
 import { Order } from "../types/OrderType";
 import SalesChart from "../components/specific/dashboard/SalesChart";
+import { useAppSelector } from "../store/store";
 
 const DashboardPage = () => {
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const [orderList, setOrderList] = useState<Order[]>([]);
-
     const { ordered, inProducting, delivered, canceled } = useClassifiedOrderList({ orderList });
 
     useEffect(() => {
         const getOrderList = async () => {
+            if (!manufacturerId) return;
             try {
-                const response = await newAxios.get("/api/v1/order/manufacturer/4/orders");
+                const response = await newAxios.get(`/api/v1/order/manufacturer/${manufacturerId}/orders`);
                 let orderList = response.data.data;
                 setOrderList(orderList);
             } catch (e) {
@@ -25,14 +27,13 @@ const DashboardPage = () => {
             }
         };
         getOrderList();
-    }, []);
+    }, [manufacturerId]);
 
     return (
         <Box sx={{ flexGrow: 1, width: "80%" }}>
             <Grid container spacing={2}>
-                {/* 주문 현황 랜더링 */}
                 <Grid size={12}>
-                    <OrderStatusColntainer>
+                    <OrderStatusContainer>
                         <Category>
                             <BigText>주문 / 출력 현황</BigText>
                         </Category>
@@ -52,7 +53,7 @@ const DashboardPage = () => {
                                 <BigText>{delivered.length}건</BigText>
                             </StatusCard>
                         </StatusCardsContainer>
-                    </OrderStatusColntainer>
+                    </OrderStatusContainer>
                 </Grid>
 
                 <Grid size={12}>
@@ -80,7 +81,6 @@ const Category = styled(Box)`
     height: 40px;
     padding: 10px;
     border-bottom: 1px solid #e6e6e6;
-
     display: flex;
     align-items: center;
     justify-content: start;
@@ -91,26 +91,24 @@ const BigText = styled(Typography)`
     font-size: 20px;
 `;
 
-const OrderStatusColntainer = styled(StyledCard)`
+const OrderStatusContainer = styled(StyledCard)`
     width: 100%;
     aspect-ratio: 7.5/1;
     display: flex;
-    flex-direction: column; // 세로 방향으로 정렬
+    flex-direction: column;
 `;
 
 const StatusCardsContainer = styled(Box)`
     display: flex;
     flex: 1;
-    //padding: 10px;
-    align-items: stretch; // 카드가 세로 방향으로 맞추어 배치되도록
+    align-items: stretch;
 `;
 
 const StatusCard = styled(Card)`
-    flex: 1; // 카드가 가로 방향으로 균등하게 배치되도록
+    flex: 1;
     height: 100%;
-    border: none; // 테두리 제거
+    border: none;
     box-shadow: none;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -120,5 +118,5 @@ const StatusCard = styled(Card)`
 const Divider = styled(Box)`
     width: 1px;
     background-color: #e6e6e6;
-    height: 100%; // 전체 높이에 맞추기
+    height: 100%;
 `;

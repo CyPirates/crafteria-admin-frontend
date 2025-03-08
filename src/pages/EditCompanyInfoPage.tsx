@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { newAxios } from "../utils/newAxios";
 
 const EditCompanyInfoPage = () => {
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const data = useLocation().state;
     const navigate = useNavigate();
     const [image, setImage] = useState<File | undefined>(undefined);
@@ -56,9 +57,11 @@ const EditCompanyInfoPage = () => {
         }
 
         try {
-            const response = await newAxios.put(`/api/v1/manufacturers/${4}`, submittedData, { headers: { "Content-Type": "multipart/form-data" } });
+            const response = await newAxios.put(`/api/v1/manufacturers/${manufacturerId}`, submittedData, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}`, "Content-Type": "multipart/form-data" },
+            });
             console.log(response.data);
-            navigate("/dashboard");
+            navigate("/information");
         } catch (e) {
             console.log(e);
         }

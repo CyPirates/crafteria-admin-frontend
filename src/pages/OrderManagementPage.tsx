@@ -52,7 +52,7 @@ export default ManageOrderPage;
 const PageWrapper = styled(Box)`
     width: 100%;
     margin-left: 2%;
-
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
 `;

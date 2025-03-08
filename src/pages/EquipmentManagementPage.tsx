@@ -21,6 +21,7 @@ export default EquipmentManagementPage;
 const Category = styled(Box)`
     width: 100%;
     height: 40px;
+    margin-top: 20px;
     padding: 10px;
     border-bottom: 1px solid #e6e6e6;
 

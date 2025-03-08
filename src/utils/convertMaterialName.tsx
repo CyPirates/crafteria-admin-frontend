@@ -5,7 +5,7 @@ const convertMaterialName = (target: string) => {
     if (isEng) {
         switch (target) {
             case "FILAMENT":
-                return "필라멘트트";
+                return "필라멘트";
             case "LIQUID":
                 return "액체";
             default:

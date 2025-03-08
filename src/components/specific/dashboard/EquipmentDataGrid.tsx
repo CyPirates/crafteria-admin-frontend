@@ -50,6 +50,7 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 const EquipmentDataGrid = () => {
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const [rows, setRows] = useState<GridRowsProp>([]);
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const [targetRow, setTargetRow] = useState<GridRowModel | null>(null);
@@ -59,7 +60,7 @@ const EquipmentDataGrid = () => {
 
     const getEquipmentList = async () => {
         try {
-            const response = await newAxios.get("/api/v1/equipment/manufacturer/4");
+            const response = await newAxios.get(`/api/v1/equipment/manufacturer/${manufacturerId}`);
             const equipmentList = response.data.data;
             setRows(
                 equipmentList.map((e: Equipment) => ({
@@ -93,7 +94,8 @@ const EquipmentDataGrid = () => {
 
         const formData = new FormData();
         formData.append("name", target.name); // 이름 추가
-        formData.append("manufacturerId", "3");
+        formData.append("manufacturerId", manufacturerId!);
+        formData.append("status", target.status);
 
         // 이미지 처리: URL 또는 파일 모두 image로 추가
         if (target!.file) {

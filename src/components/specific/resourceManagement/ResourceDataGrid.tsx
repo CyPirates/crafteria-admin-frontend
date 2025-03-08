@@ -61,6 +61,7 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 const ResourceDataGrid = () => {
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const [rows, setRows] = useState<GridRowsProp>([]);
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const [targetRow, setTargetRow] = useState<GridRowModel | null>(null);
@@ -81,7 +82,7 @@ const ResourceDataGrid = () => {
 
     const getResourceList = async () => {
         try {
-            const response = await newAxios.get("/api/v1/technologies/manufacturer/4");
+            const response = await newAxios.get(`/api/v1/technologies/manufacturer/${manufacturerId}`);
             const equipmentList = response.data.data;
             setRows(
                 equipmentList.map((e: Resource) => ({

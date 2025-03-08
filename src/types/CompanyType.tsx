@@ -19,3 +19,12 @@ export type Equipment = {
     imageFileUrl: string;
     manufacturerId: string;
 };
+
+export type InitCompany = {
+    name: string;
+    introduction: string;
+    address: string;
+    dialNumber: string;
+    representativeEquipment: string;
+    image: File;
+};

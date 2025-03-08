@@ -7,6 +7,7 @@ import { newAxios } from "../utils/newAxios";
 import { Review } from "../types/ReviewType";
 
 const ManageREviewPage = () => {
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
     const [reviewList, setReviewList] = useState<Review[]>([]);
 
@@ -21,7 +22,7 @@ const ManageREviewPage = () => {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
 
-    const rows = reviewList!.map((review) => ({
+    const rows = reviewList.map((review) => ({
         id: review.id,
         content: review.content,
         rating: review.rating,
@@ -32,14 +33,21 @@ const ManageREviewPage = () => {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const response = await newAxios.get(`/api/v1/reviews/manufacturer/${4}`);
-                const reviews = response.data.data;
-                console.log(reviews);
-                setReviewList(reviews);
+                const response = await newAxios.get(`/api/v1/reviews/manufacturer/${manufacturerId}`);
+                const reviews = response.data.data.content;
+
+                // API 응답이 배열인지 확인하고, 아니면 빈 배열로 설정
+                if (Array.isArray(reviews)) {
+                    setReviewList(reviews);
+                } else {
+                    setReviewList([]);
+                    console.error("API 응답 데이터가 배열이 아닙니다.");
+                }
             } catch (e) {
                 console.log(e);
             }
         };
+
         fetchReviews();
     }, []);
 

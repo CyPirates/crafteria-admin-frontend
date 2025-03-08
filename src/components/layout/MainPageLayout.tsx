@@ -20,6 +20,7 @@ import SignUpPage from "../../pages/SignUpPage";
 import EquipmentManagementPage from "../../pages/EquipmentManagementPage";
 import ResourceManagementPage from "../../pages/ResourceManagementPage";
 import CompanyInfoPage from "../../pages/CompanyInfoPage";
+import OrderDetailPage from "../../pages/OrderDetailPage";
 
 const NAVIGATION: Navigation = [
     { segment: "information", title: "업체정보", icon: <DescriptionIcon /> },
@@ -52,6 +53,7 @@ function AppRoutes() {
             {/* LoginPage는 DashboardLayout 외부에서 렌더링 */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+
             {/* DashboardLayout에 포함되는 라우트 */}
             <Route
                 path="/*"
@@ -65,6 +67,7 @@ function AppRoutes() {
                             <Route path="orders" element={<ManageOrderPage />} />
                             <Route path="reviews" element={<ManageReviewPage />} />
                             <Route path="/edit-info" element={<EditCompanyInfoPage />} />
+                            <Route path="/order-detail" element={<OrderDetailPage />} />
                         </Routes>
                     </DashboardLayout>
                 }

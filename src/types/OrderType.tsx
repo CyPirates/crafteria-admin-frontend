@@ -3,14 +3,23 @@ export type Order = {
     userId: string;
     purchasePrice: string;
     manufactureId: string;
+    status: string;
+    modelFileUrls: string[];
+    deliveryAddress: string;
+    recipientName: string;
+    recipientPhone: string;
+    recipientEmail: string;
+    specialRequest: string;
+    orderItems: Items[];
+};
+
+export type Items = {
     widthSize: string;
     lengthSize: string;
     heightSize: string;
     magnification: string;
     quantity: string;
-    deliveryAddress: string;
-    status: string;
-    modelFileUrls: string[];
+    technologyId: string;
 };
 
 export type ClassifiedOrderList = {

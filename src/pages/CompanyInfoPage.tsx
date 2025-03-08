@@ -5,14 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/system";
 import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
 import styled from "@emotion/styled";
+import { useAppSelector } from "../store/store";
 
 const CompanyInfoPage = () => {
     const navigate = useNavigate();
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const [data, setData] = useState<Company>();
     useEffect(() => {
         const getCompanyData = async () => {
             try {
-                const response = await newAxios.get("/api/v1/manufacturers/4");
+                const response = await newAxios.get(`/api/v1/manufacturers/${manufacturerId}`);
                 let fetchedData = response.data.data;
                 setData(fetchedData);
             } catch (e) {

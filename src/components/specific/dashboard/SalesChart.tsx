@@ -7,6 +7,7 @@ import { newAxios } from "../../../utils/newAxios";
 export default function SalesChart() {
     const [salesAmount, setSalesAmount] = useState<number[]>([]);
     const [orderAmount, setOrderAmount] = useState<number[]>([]);
+    const manufacturerId = localStorage.getItem("manufacturerId");
 
     const GetDatesFromToday = (n: number): string[] => {
         const today = new Date();
@@ -30,7 +31,7 @@ export default function SalesChart() {
             const orderData: number[] = [];
 
             for (const e of dates) {
-                const response = await newAxios.get(`/api/v1/chart/daily?manufacturerId=3&specificDate=${e}`);
+                const response = await newAxios.get(`/api/v1/chart/daily?manufacturerId=${manufacturerId}&specificDate=${e}`);
                 const data = response.data;
                 salesData.push(data.totalSalesAmount);
                 orderData.push(data.totalOrders);

@@ -4,58 +4,44 @@ import Logo from "../assets/logo.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { newAxios } from "../utils/newAxios";
-import { useDispatch } from "react-redux";
-import { login, LoginData } from "../store/loginSlice"; // 변경된 login import
 import { useAppDispatch } from "../store/store";
+import { login, LoginData } from "../store/loginSlice";
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const [id, setId] = useState<string>(""); // 아이디 상태
-    const [password, setPassword] = useState<string>(""); // 비밀번호 상태
-    const dispatch = useAppDispatch(); // dispatch
+    const [id, setId] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const dispatch = useAppDispatch();
 
     const handleSubmit = async () => {
-        const data = {
-            username: id,
-            password: password,
-        };
+        const data = { username: id, password: password };
         try {
-            // 로그인 API 호출
             const response = await newAxios.post("/api/v1/auth/login", data, {
                 headers: { "Content-Type": "application/json" },
             });
             console.log(response.data.data);
             if (response.data.status === 200) {
                 const loginData: LoginData = response.data.data;
-                // console.log(loginData.accessToken);
-                // console.log(typeof loginData);
-                // // 로그인 성공 시 Redux에 로그인 데이터 저장
-                // dispatch(login(loginData));
                 localStorage.setItem("accessToken", loginData.accessToken);
                 localStorage.setItem("manufacturerId", loginData.manufacturerId);
-                navigate("/dashboard"); // 대시보드로 이동
+                navigate("/dashboard");
             }
         } catch (e) {
             console.error("로그인 에러:", e);
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter") {
+            handleSubmit();
+        }
+    };
+
     return (
         <PageWrapper>
             <LogoContainer src={Logo} />
-            <StyledTextField
-                id="id"
-                label="아이디"
-                value={id}
-                onChange={(e) => setId(e.target.value)} // 아이디 입력 처리
-            />
-            <StyledTextField
-                id="password"
-                label="비밀번호"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} // 비밀번호 입력 처리
-            />
+            <StyledTextField id="id" label="아이디" value={id} onChange={(e) => setId(e.target.value)} onKeyDown={handleKeyDown} />
+            <StyledTextField id="password" label="비밀번호" type="password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown} />
             <StyledButton variant="contained" sx={{ width: "300px" }} onClick={handleSubmit}>
                 로그인
             </StyledButton>

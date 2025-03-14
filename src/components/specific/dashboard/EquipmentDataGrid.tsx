@@ -33,10 +33,11 @@ function EditToolbar(props: EditToolbarProps) {
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-        setRows((oldRows) => [...oldRows, { id: "N/A", name: "", status: "Available", imageFileUrl: "", file: null, isNew: true }]);
+        const newId = Math.random().toString(36).substr(2, 9);
+        setRows((oldRows) => [...oldRows, { id: newId, name: "", status: "Available", imageFileUrl: "", file: null, isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            ["N/A"]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+            [newId]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
         }));
     };
 
@@ -190,7 +191,6 @@ const EquipmentDataGrid = () => {
     };
 
     const columns: GridColDef[] = [
-        { field: "id", headerName: "장비ID", width: 150, editable: false },
         {
             field: "name",
             headerName: "장비명",

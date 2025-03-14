@@ -44,11 +44,11 @@ function EditToolbar(props: EditToolbarProps) {
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-        //const newId = Math.random().toString(36).substr(2, 9); // 예시로 고유 ID 생성
-        setRows((oldRows) => [...oldRows, { id: "N/A", type: "필라멘트", color: "#000000", imageFileUrl: "", file: null, description: "설명", price: 0, isNew: true }]);
+        const newId = Math.random().toString(36).substr(2, 9); // 예시로 고유 ID 생성
+        setRows((oldRows) => [...oldRows, { id: newId, type: "필라멘트", color: "#000000", imageFileUrl: "", file: null, description: "설명", price: 0, isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            ["N/A"]: { mode: GridRowModes.Edit, fieldToFocus: "type" },
+            [newId]: { mode: GridRowModes.Edit, fieldToFocus: "type" },
         }));
     };
     return (
@@ -108,7 +108,7 @@ const ResourceDataGrid = () => {
         let material = convertMaterialName(target.type);
 
         const formData = new FormData();
-        formData.append("manufacturerId", "4");
+        formData.append("manufacturerId", manufacturerId!);
         formData.append("material", material);
         formData.append("description", target.description);
         formData.append("colorValue", target.color);

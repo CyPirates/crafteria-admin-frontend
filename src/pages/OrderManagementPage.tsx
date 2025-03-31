@@ -8,6 +8,7 @@ import styled from "styled-components";
 import OrderDataGrid from "../components/specific/manageOrder/OrderDataGrid";
 
 const ManageOrderPage = () => {
+    const manufacturerId = localStorage.getItem("manufacturerId");
     const [filter, setFilter] = useState<number>(0); // 0: 주문접수, 1: 출력 중, 2: 출력 완료
     const [orderList, setOrderList] = useState<Order[]>([]);
     const { ordered, inProducting, delivered, canceled } = useClassifiedOrderList({ orderList });
@@ -15,7 +16,7 @@ const ManageOrderPage = () => {
 
     const getOrderList = async () => {
         try {
-            const response = await newAxios.get("/api/v1/order/manufacturer/4/orders");
+            const response = await newAxios.get(`/api/v1/order/manufacturer/${manufacturerId}/orders`);
             let orderList = response.data.data;
             setOrderList(orderList);
         } catch (e) {

@@ -44,7 +44,7 @@ function EditToolbar(props: EditToolbarProps) {
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-        const newId = Math.random().toString(36).substr(2, 9); // 예시로 고유 ID 생성
+        const newId = "NEW" + Math.random().toString(36).substr(2, 9); // 예시로 고유 ID 생성
         setRows((oldRows) => [...oldRows, { id: newId, type: "필라멘트", color: "#000000", imageFileUrl: "", file: null, description: "설명", price: 0, isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
@@ -126,14 +126,14 @@ const ResourceDataGrid = () => {
         }
 
         try {
-            if (target.id === "N/A") {
+            if (target.id.toString().toUpperCase().startsWith("NEW")) {
                 // 신규 항목 저장
                 await newAxios.post("/api/v1/technologies", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {
                 // 기존 항목 수정
-                await newAxios.put(`/api/v1/equipment/${target.id}`, formData, {
+                await newAxios.put(`/api/v1/technologies/${target.id}`, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             }
@@ -307,6 +307,7 @@ const ResourceDataGrid = () => {
                     toolbar: { setRows, setRowModesModel },
                 }}
             />
+            <div>{rows.length}</div>
         </Box>
     );
 };

@@ -15,7 +15,7 @@ type OrderList = {
 };
 
 const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
-    const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([]);
     const buttonText = ["시작", "완료"];
     const rows = data.map((order) => ({
         id: order.orderId,

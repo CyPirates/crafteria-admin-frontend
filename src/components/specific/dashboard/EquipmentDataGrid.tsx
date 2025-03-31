@@ -33,7 +33,7 @@ function EditToolbar(props: EditToolbarProps) {
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-        const newId = Math.random().toString(36).substr(2, 9);
+        const newId = "NEW" + Math.random().toString(36).substr(2, 9);
         setRows((oldRows) => [...oldRows, { id: newId, name: "", status: "Available", imageFileUrl: "", file: null, isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
@@ -69,6 +69,7 @@ const EquipmentDataGrid = () => {
                     name: e.name,
                     status: e.status,
                     imageFileUrl: e.imageFileUrl,
+                    printSpeed: e.printSpeed,
                 }))
             );
         } catch (e) {
@@ -97,6 +98,7 @@ const EquipmentDataGrid = () => {
         formData.append("name", target.name); // 이름 추가
         formData.append("manufacturerId", manufacturerId!);
         formData.append("status", target.status);
+        formData.append("printSpeed", target.printSpeed);
 
         // 이미지 처리: URL 또는 파일 모두 image로 추가
         if (target!.file) {
@@ -110,7 +112,7 @@ const EquipmentDataGrid = () => {
         }
 
         try {
-            if (target.id === "N/A") {
+            if (target.id.toString().toUpperCase().startsWith("NEW")) {
                 // 신규 항목 저장
                 await newAxios.post("/api/v1/equipment", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -229,6 +231,12 @@ const EquipmentDataGrid = () => {
             },
         },
         {
+            field: "printSpeed",
+            headerName: `출력속도 (mm³/시간)`,
+            width: 200,
+            editable: true,
+        },
+        {
             field: "status",
             headerName: "상태",
             width: 60,
@@ -248,7 +256,7 @@ const EquipmentDataGrid = () => {
                         console.error("Failed to change status:", error);
                     }
                 };
-                if (params.row.id === "N/A") return null;
+                if (params.row.id.toString().toUpperCase().startsWith("NEW")) return null;
 
                 return (
                     <Button variant="contained" size="small" color={params.row.status === "Available" ? "primary" : "secondary"} onClick={handleStatusChange}>

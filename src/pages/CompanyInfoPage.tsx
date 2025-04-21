@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/system";
 import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useAppSelector } from "../store/store";
+import { useColor } from "color-thief-react";
 
 const CompanyInfoPage = () => {
     const navigate = useNavigate();
@@ -23,15 +23,26 @@ const CompanyInfoPage = () => {
         };
         getCompanyData();
     }, []);
+
+    const { data: color } = useColor(data?.imageFileUrl || "", "rgbArray", {
+        crossOrigin: "anonymous", // 외부 URL 이미지를 다룰 때 필수
+    });
+
+    const toPastel = (rgbArray: number[], adjustmentFactor: number = 0.5) => {
+        if (!rgbArray) return [255, 255, 255]; // 기본 흰색
+        return rgbArray.map((color) => Math.round(color + (255 - color) * adjustmentFactor));
+    };
+    const pastelColor = color ? toPastel(color) : [255, 255, 255];
+
     return (
         <>
             <Grid size={12}>
-                <OutlineBox>
+                <OutlineBox style={{ backgroundColor: `rgb(${pastelColor.join(",")})` }}>
                     <ImageWrapper>
                         <CardMedia component="img" sx={{ width: "100%", height: "100%", objectFit: "cover" }} image={data?.imageFileUrl} alt="profile-image" />
                     </ImageWrapper>
                     <InfoContainer>
-                        <CompanyName>{data?.name}</CompanyName>
+                        <LargeText>{data?.name}</LargeText>
                         <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "16px" }}>
                             {data?.introduction}
                         </Typography>
@@ -40,9 +51,6 @@ const CompanyInfoPage = () => {
                         </Typography>
                         <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "16px" }}>
                             전화번호: {data?.dialNumber}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "16px" }}>
-                            대표장비: {data?.representativeEquipment}
                         </Typography>
                         <Button
                             variant="contained"
@@ -64,6 +72,7 @@ const CompanyInfoPage = () => {
                         </Button>
                     </InfoContainer>
                 </OutlineBox>
+                <LargeText>소개말</LargeText>
             </Grid>
         </>
     );
@@ -78,6 +87,7 @@ const StyledCard = styled(Card)`
 
 const OutlineBox = styled(StyledCard)`
     width: 100%;
+    height: 320px;
     aspect-ratio: 3.5/1; // 원래 비율 유지
     border: 1px solid #e6e6e6;
     box-shadow: none;
@@ -88,7 +98,7 @@ const OutlineBox = styled(StyledCard)`
 `;
 
 const ImageWrapper = styled(Box)`
-    width: 25%;
+    width: 280px;
     aspect-ratio: 1/1; // 정사각형 비율
     overflow: hidden;
     display: flex;
@@ -107,7 +117,7 @@ const InfoContainer = styled(Box)`
     justify-content: space-between;
 `;
 
-const CompanyName = styled(Typography)`
+const LargeText = styled(Typography)`
     font-weight: bold;
     font-size: 30px;
 `;

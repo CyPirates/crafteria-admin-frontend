@@ -18,7 +18,7 @@ export type Equipment = {
     status: string;
     imageFileUrl: string;
     manufacturerId: string;
-    printSpeed: string;
+    printSpeed?: string;
 };
 
 export type InitCompany = {

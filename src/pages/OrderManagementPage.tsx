@@ -11,8 +11,8 @@ const ManageOrderPage = () => {
     const manufacturerId = localStorage.getItem("manufacturerId");
     const [filter, setFilter] = useState<number>(0); // 0: 주문접수, 1: 출력 중, 2: 출력 완료
     const [orderList, setOrderList] = useState<Order[]>([]);
-    const { ordered, inProducting, delivered, canceled } = useClassifiedOrderList({ orderList });
-    const classifiedOrderArray = [ordered, inProducting, delivered];
+    const { paid, inProducting, delivering, canceled } = useClassifiedOrderList({ orderList });
+    const classifiedOrderArray = [paid, inProducting, delivering];
 
     const getOrderList = async () => {
         try {

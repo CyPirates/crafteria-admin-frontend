@@ -69,7 +69,6 @@ const EquipmentDataGrid = () => {
                     name: e.name,
                     status: e.status,
                     imageFileUrl: e.imageFileUrl,
-                    printSpeed: e.printSpeed,
                 }))
             );
         } catch (e) {
@@ -98,7 +97,7 @@ const EquipmentDataGrid = () => {
         formData.append("name", target.name); // 이름 추가
         formData.append("manufacturerId", manufacturerId!);
         formData.append("status", target.status);
-        formData.append("printSpeed", target.printSpeed);
+        //formData.append("printSpeed", target.printSpeed);
 
         // 이미지 처리: URL 또는 파일 모두 image로 추가
         if (target!.file) {
@@ -229,12 +228,6 @@ const EquipmentDataGrid = () => {
                     </Box>
                 );
             },
-        },
-        {
-            field: "printSpeed",
-            headerName: `출력속도 (mm³/시간)`,
-            width: 200,
-            editable: true,
         },
         {
             field: "status",

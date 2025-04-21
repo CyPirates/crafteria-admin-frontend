@@ -307,7 +307,6 @@ const ResourceDataGrid = () => {
                     toolbar: { setRows, setRowModesModel },
                 }}
             />
-            <div>{rows.length}</div>
         </Box>
     );
 };

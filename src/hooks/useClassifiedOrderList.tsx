@@ -6,24 +6,24 @@ type OwnProps = {
 };
 
 const useClassifiedOrderList = ({ orderList }: OwnProps) => {
-    const [ordered, setOrdered] = useState<Order[]>([]);
+    const [paid, setPaid] = useState<Order[]>([]);
     const [inProducting, setInProducting] = useState<Order[]>([]);
-    const [delivered, setDelivered] = useState<Order[]>([]);
+    const [delivering, setDelivering] = useState<Order[]>([]);
     const [canceled, setCanceled] = useState<Order[]>([]);
 
     useEffect(() => {
-        const classifiedOrdered = orderList.filter((order) => order.status === "ORDERED");
+        const classifiedPaid = orderList.filter((order) => order.status === "PAID");
         const classifiedInProducting = orderList.filter((order) => order.status === "IN_PRODUCTING");
-        const classifiedDelivered = orderList.filter((order) => order.status === "DELIVERED");
+        const classifiedDelivering = orderList.filter((order) => order.status === "DELIVERING");
         const classifiedCanceled = orderList.filter((order) => order.status === "CANCELED");
 
-        setOrdered(classifiedOrdered);
+        setPaid(classifiedPaid);
         setInProducting(classifiedInProducting);
-        setDelivered(classifiedDelivered);
+        setDelivering(classifiedDelivering);
         setCanceled(classifiedCanceled);
     }, [orderList]);
 
-    return { ordered, inProducting, delivered, canceled };
+    return { paid, inProducting, delivering, canceled };
 };
 
 export default useClassifiedOrderList;

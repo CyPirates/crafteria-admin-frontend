@@ -12,5 +12,8 @@ export type InputCompanyInfo = {
     address: string;
     dialNumber: string;
     representativeEquipment: string;
-    image: File | string | undefined; // 파일 객체 또는 이미지 URL
+    image: File | string | undefined;
+    printSpeedFilament: string;
+    printSpeedPowder: string;
+    printSpeedLiquid: string;
 };

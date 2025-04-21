@@ -13,7 +13,7 @@ import FileDrop from "../components/common/FileDrop";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
-    const steps = ["개인 정보", "업체 정보"];
+    const steps = ["개인 정보", "업체 정보", "재료 별 출력 속도"];
     const [activeStep, setActiveStep] = useState<number>(0);
     const [userInfo, setUserInfo] = useState<InputUserInfo>({
         id: "",
@@ -29,6 +29,9 @@ const SignUpPage = () => {
         dialNumber: "",
         representativeEquipment: "",
         image: undefined,
+        printSpeedFilament: "",
+        printSpeedLiquid: "",
+        printSpeedPowder: "",
     });
     const { id, password, name, phoneNumber, address } = userInfo;
 
@@ -59,8 +62,15 @@ const SignUpPage = () => {
             formData.append("address", companyInfo.address);
             formData.append("dialNumber", companyInfo.dialNumber);
             formData.append("representativeEquipment", companyInfo.representativeEquipment);
+            formData.append("printSpeedFilament", companyInfo.printSpeedFilament);
+            formData.append("printSpeedLiquid", companyInfo.printSpeedLiquid);
+            formData.append("printSpeedPowder", companyInfo.printSpeedPowder);
             if (companyInfo.image) {
                 formData.append("image", companyInfo.image);
+            }
+            console.log("FormData 내용:");
+            for (const pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
             }
             await newAxios.post("/api/v1/manufacturers", formData, {
                 headers: {
@@ -106,7 +116,13 @@ const SignUpPage = () => {
                             })}
                         </Stepper>
                     </Box>
-                    {activeStep === 0 ? <UserInfoInputField userInfo={userInfo} setter={setUserInfo} /> : <CompanyInfoInputField companyInfo={companyInfo} setter={setCompanyInfo} />}
+                    {activeStep === 0 ? (
+                        <UserInfoInputField userInfo={userInfo} setter={setUserInfo} />
+                    ) : activeStep === 1 ? (
+                        <CompanyInfoInputField companyInfo={companyInfo} setter={setCompanyInfo} />
+                    ) : (
+                        <PrintSpeedInputField companyInfo={companyInfo} setter={setCompanyInfo} />
+                    )}
                     <StyledButton variant="contained" sx={{ width: "400px" }} onClick={handleNextButtonClick}>
                         {activeStep === steps.length - 1 ? "가입하기" : "다음"}
                     </StyledButton>
@@ -142,6 +158,35 @@ const CompanyInfoInputField = ({ companyInfo, setter }: { companyInfo: InputComp
                 label="대표장비"
                 value={companyInfo.representativeEquipment}
                 onChange={(e) => setter((prev) => ({ ...prev, representativeEquipment: e.target.value }))}
+            />
+        </StyledBox>
+    );
+};
+
+const PrintSpeedInputField = ({ companyInfo, setter }: { companyInfo: InputCompanyInfo; setter: React.Dispatch<React.SetStateAction<InputCompanyInfo>> }) => {
+    return (
+        <StyledBox>
+            <p>해당사항 없을 시 0으로 입력해주세요.</p>
+            <StyledTextField
+                id="printSpeedFilament"
+                type="number"
+                label="필라멘트"
+                value={companyInfo.printSpeedFilament}
+                onChange={(e) => setter((prev) => ({ ...prev, printSpeedFilament: e.target.value }))}
+            />
+            <StyledTextField
+                id="printSpeedLiquid"
+                type="number"
+                label="액체"
+                value={companyInfo.printSpeedLiquid}
+                onChange={(e) => setter((prev) => ({ ...prev, printSpeedLiquid: e.target.value }))}
+            />
+            <StyledTextField
+                id="printSpeedPowder"
+                type="number"
+                label="분말"
+                value={companyInfo.printSpeedPowder}
+                onChange={(e) => setter((prev) => ({ ...prev, printSpeedPowder: e.target.value }))}
             />
         </StyledBox>
     );

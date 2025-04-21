@@ -52,10 +52,11 @@ const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
     ];
 
     const handleStatusUpdate = async (id: string) => {
-        const statusList = ["IN_PRODUCTING", "DELIVERED"];
+        const manufacturerId = localStorage.getItem("manufacturerId");
+        const statusList = ["IN_PRODUCTING", "DELIVERING"];
         const nextStatus = statusList[status];
         try {
-            const response = await newAxios.post(`/api/v1/order/manufacturer/change-status/${id}?manufacturerId=4&newStatusKey=${nextStatus}`);
+            const response = await newAxios.post(`/api/v1/order/manufacturer/change-status/${id}?manufacturerId=${manufacturerId}`, { newStatus: nextStatus });
             console.log(response.data.data);
         } catch (e) {
             console.log(e);

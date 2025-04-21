@@ -13,7 +13,7 @@ import { useAppSelector } from "../store/store";
 const DashboardPage = () => {
     const manufacturerId = localStorage.getItem("manufacturerId");
     const [orderList, setOrderList] = useState<Order[]>([]);
-    const { ordered, inProducting, delivered, canceled } = useClassifiedOrderList({ orderList });
+    const { paid, inProducting, delivering, canceled } = useClassifiedOrderList({ orderList });
 
     useEffect(() => {
         const getOrderList = async () => {
@@ -40,7 +40,7 @@ const DashboardPage = () => {
                         <StatusCardsContainer>
                             <StatusCard>
                                 <div>주문 접수</div>
-                                <BigText>{ordered.length}건</BigText>
+                                <BigText>{paid.length}건</BigText>
                             </StatusCard>
                             <Divider />
                             <StatusCard>
@@ -50,7 +50,7 @@ const DashboardPage = () => {
                             <Divider />
                             <StatusCard>
                                 <div>출력 완료</div>
-                                <BigText>{delivered.length}건</BigText>
+                                <BigText>{delivering.length}건</BigText>
                             </StatusCard>
                         </StatusCardsContainer>
                     </OrderStatusContainer>

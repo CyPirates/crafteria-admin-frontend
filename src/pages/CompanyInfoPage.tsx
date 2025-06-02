@@ -6,11 +6,12 @@ import { Grid } from "@mui/system";
 import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useColor } from "color-thief-react";
+import PrintSpeedDataGrid from "../components/specific/companyInfo/PrintSpeedDataGrid";
 
 const CompanyInfoPage = () => {
     const navigate = useNavigate();
     const manufacturerId = localStorage.getItem("manufacturerId");
-    const [data, setData] = useState<Company>();
+    const [data, setData] = useState<Company | undefined>(undefined);
     useEffect(() => {
         const getCompanyData = async () => {
             try {
@@ -72,7 +73,8 @@ const CompanyInfoPage = () => {
                         </Button>
                     </InfoContainer>
                 </OutlineBox>
-                <LargeText>소개말</LargeText>
+                <LargeText>출력속도</LargeText>
+                {data ? <PrintSpeedDataGrid company={data} setData={setData} /> : null}
             </Grid>
         </>
     );

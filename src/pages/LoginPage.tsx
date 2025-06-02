@@ -20,11 +20,13 @@ const LoginPage = () => {
                 headers: { "Content-Type": "application/json" },
             });
             console.log(response.data.data);
-            if (response.data.status === 200) {
-                const loginData: LoginData = response.data.data;
-                localStorage.setItem("accessToken", loginData.accessToken);
+            const loginData: LoginData = response.data.data;
+            localStorage.setItem("accessToken", loginData.accessToken);
+            if (loginData.manufacturerId) {
                 localStorage.setItem("manufacturerId", loginData.manufacturerId);
                 navigate("/dashboard");
+            } else {
+                navigate("/register");
             }
         } catch (e) {
             console.error("로그인 에러:", e);

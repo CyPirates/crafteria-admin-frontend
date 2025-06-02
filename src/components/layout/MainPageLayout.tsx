@@ -5,6 +5,7 @@ import ReviewsIcon from "@mui/icons-material/Reviews";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ConstructionIcon from "@mui/icons-material/Construction";
 import DescriptionIcon from "@mui/icons-material/Description";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PrintIcon from "@mui/icons-material/Print";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -21,6 +22,7 @@ import EquipmentManagementPage from "../../pages/EquipmentManagementPage";
 import ResourceManagementPage from "../../pages/ResourceManagementPage";
 import CompanyInfoPage from "../../pages/CompanyInfoPage";
 import OrderDetailPage from "../../pages/OrderDetailPage";
+import RegisterCompanyPage from "../../pages/RegisterCompanyPage";
 
 const NAVIGATION: Navigation = [
     { segment: "information", title: "업체정보", icon: <DescriptionIcon /> },
@@ -29,6 +31,7 @@ const NAVIGATION: Navigation = [
     { segment: "resource", title: "재료 관리", icon: <ConstructionIcon /> },
     { segment: "equipment", title: "장비 관리", icon: <PrintIcon /> },
     { segment: "orders", title: "주문 관리", icon: <ShoppingCartIcon /> },
+    { segment: "shippings", title: "배송 관리", icon: <LocalShippingIcon /> },
     { segment: "reviews", title: "리뷰 관리", icon: <ReviewsIcon /> },
     { kind: "divider" },
 ];
@@ -53,6 +56,7 @@ function AppRoutes() {
             {/* LoginPage는 DashboardLayout 외부에서 렌더링 */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/register" element={<RegisterCompanyPage />} />
 
             {/* DashboardLayout에 포함되는 라우트 */}
             <Route

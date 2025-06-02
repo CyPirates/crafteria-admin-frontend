@@ -7,38 +7,16 @@ interface OrderFilterProps {
 }
 
 const OrderFilter = ({ filter, setFilter }: OrderFilterProps) => {
+    const filterTexts = ["주문 접수", "출력 중", "출력 완료", "배송 중", "배송 완료"];
     return (
         <Container>
-            <Typography
-                onClick={() => setFilter(0)}
-                sx={{
-                    cursor: "pointer",
-                    fontWeight: filter === 0 ? "bold" : "normal",
-                    color: filter === 0 ? "red" : null,
-                }}
-            >
-                주문 접수
-            </Typography>
-            <Typography
-                onClick={() => setFilter(1)}
-                sx={{
-                    cursor: "pointer",
-                    fontWeight: filter === 1 ? "bold" : "normal",
-                    color: filter === 1 ? "red" : null,
-                }}
-            >
-                출력 중
-            </Typography>
-            <Typography
-                onClick={() => setFilter(2)}
-                sx={{
-                    cursor: "pointer",
-                    fontWeight: filter === 2 ? "bold" : "normal",
-                    color: filter === 2 ? "red" : null,
-                }}
-            >
-                출력 완료
-            </Typography>
+            {filterTexts.map((text, i) => {
+                return (
+                    <FilterText key={i} onClick={() => setFilter(i)} selected={filter === i}>
+                        {text}
+                    </FilterText>
+                );
+            })}
         </Container>
     );
 };
@@ -51,4 +29,10 @@ const Container = styled(Box)`
     border-bottom: 2px solid #c2c2c2;
     display: flex;
     gap: 20px;
+`;
+
+const FilterText = styled(Typography)<{ selected: boolean }>`
+    cursor: pointer;
+    font-weight: ${(props) => (props.selected ? "bold" : "normal")};
+    color: ${(props) => (props.selected ? "red" : null)};
 `;

@@ -1,9 +1,11 @@
 export type InputUserInfo = {
     id: string;
     password: string;
-    name: string;
+    realname: string;
     phoneNumber: string;
     address: string;
+    manufacturerName: string;
+    manufacturerDescription: string;
 };
 
 export type InputCompanyInfo = {

@@ -8,7 +8,9 @@ export type Company = {
     rating: string;
     representativeEquipment: string;
     imageFileUrl: string;
-    equipmentList: Equipment[];
+    printSpeedFilament: string;
+    printSpeedPowder: string;
+    printSpeedLiquid: string;
 };
 
 export type Equipment = {

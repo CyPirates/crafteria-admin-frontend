@@ -9,10 +9,10 @@ import OrderDataGrid from "../components/specific/manageOrder/OrderDataGrid";
 
 const ManageOrderPage = () => {
     const manufacturerId = localStorage.getItem("manufacturerId");
-    const [filter, setFilter] = useState<number>(0); // 0: 주문접수, 1: 출력 중, 2: 출력 완료
+    const [filter, setFilter] = useState<number>(0); // 0: 주문접수, 1: 출력 중, 2: 출력 완료, 3: 배송 중, 4: 배송 완료
     const [orderList, setOrderList] = useState<Order[]>([]);
-    const { paid, inProducting, delivering, canceled } = useClassifiedOrderList({ orderList });
-    const classifiedOrderArray = [paid, inProducting, delivering];
+    const { paid, inProducting, producted, delivering, delivered, canceled } = useClassifiedOrderList({ orderList });
+    const classifiedOrderArray = [paid, inProducting, producted, delivering, delivered];
 
     const getOrderList = async () => {
         try {
@@ -35,8 +35,6 @@ const ManageOrderPage = () => {
     return (
         <PageWrapper>
             <OrderFilter filter={filter} setFilter={setFilter} />
-
-            {/* 선택된 주문 상태의 리스트를 보여줌 */}
             <OrderCardContainer>
                 {classifiedOrderArray[filter].length === 0 ? (
                     <Typography>해당 상태의 주문이 없습니다.</Typography>

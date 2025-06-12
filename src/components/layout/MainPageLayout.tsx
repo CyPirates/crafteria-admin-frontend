@@ -30,8 +30,8 @@ const NAVIGATION: Navigation = [
     { kind: "divider" },
     { segment: "resource", title: "재료 관리", icon: <ConstructionIcon /> },
     { segment: "equipment", title: "장비 관리", icon: <PrintIcon /> },
-    { segment: "orders", title: "주문 관리", icon: <ShoppingCartIcon /> },
-    { segment: "shippings", title: "배송 관리", icon: <LocalShippingIcon /> },
+    { segment: "orders", title: "주문/배송 관리", icon: <LocalShippingIcon /> },
+    //{ segment: "shippings", title: "배송 관리", icon: <LocalShippingIcon /> },
     { segment: "reviews", title: "리뷰 관리", icon: <ReviewsIcon /> },
     { kind: "divider" },
 ];

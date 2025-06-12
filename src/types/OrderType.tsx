@@ -11,6 +11,14 @@ export type Order = {
     recipientEmail: string;
     specialRequest: string;
     orderItems: Items[];
+    delivery: Delivery;
+};
+
+export type Delivery = {
+    deliveryId: string;
+    courier: string;
+    trackingNumber: string;
+    deliveryDate: string;
 };
 
 export type Items = {

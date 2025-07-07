@@ -65,6 +65,10 @@ const CompanyInfoPage = () => {
                                         address: data?.address,
                                         dialNumber: data?.dialNumber,
                                         representativeEquipment: data?.representativeEquipment,
+                                        printSpeedFilament: data?.printSpeedFilament,
+                                        printSpeedLiquid: data?.printSpeedLiquid,
+                                        printSpeedMetalPowder: data?.printSpeedMetalPowder,
+                                        printSpeedNylonPowder: data?.printSpeedNylonPowder,
                                     },
                                 })
                             }

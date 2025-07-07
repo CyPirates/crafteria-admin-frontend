@@ -24,16 +24,7 @@ import {
 import { convertImageUrlToFile } from "../../../utils/convertUrlToFile";
 import { newAxios } from "../../../utils/newAxios";
 import convertMaterialName from "../../../utils/convertMaterialName";
-
-type Resource = {
-    technologyId: string;
-    manufacturerId: string;
-    material: string;
-    description: string;
-    colorValue: string;
-    imageUrl: string;
-    pricePerHour: string;
-};
+import { Technology } from "../../../types/CompanyType";
 
 interface EditToolbarProps {
     setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -85,7 +76,7 @@ const ResourceDataGrid = () => {
             const response = await newAxios.get(`/api/v1/technologies/manufacturer/${manufacturerId}`);
             const equipmentList = response.data.data;
             setRows(
-                equipmentList.map((e: Resource) => ({
+                equipmentList.map((e: Technology) => ({
                     id: e.technologyId,
                     type: convertMaterialName(e.material),
                     description: e.description,
@@ -103,10 +94,10 @@ const ResourceDataGrid = () => {
         getResourceList();
     }, []);
 
-    const postEquipmentData = async (target: GridRowModel | null) => {
+    const postTechnologyData = async (target: GridRowModel | null) => {
         if (target === null) return;
         let material = convertMaterialName(target.type);
-
+        console.log(material);
         const formData = new FormData();
         formData.append("manufacturerId", manufacturerId!);
         formData.append("material", material);
@@ -146,7 +137,7 @@ const ResourceDataGrid = () => {
     };
 
     useEffect(() => {
-        postEquipmentData(targetRow);
+        postTechnologyData(targetRow);
     }, [targetRow]);
 
     const handleDeleteClick = async (id: string) => {
@@ -208,7 +199,7 @@ const ResourceDataGrid = () => {
             width: 220,
             editable: true,
             type: "singleSelect",
-            valueOptions: ["필라멘트", "분말", "액상"],
+            valueOptions: ["필라멘트", "액상 레진", "나일론 분말", "금속 분말"],
         },
         {
             field: "imageFileUrl",

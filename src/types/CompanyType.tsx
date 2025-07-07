@@ -8,9 +8,13 @@ export type Company = {
     rating: string;
     representativeEquipment: string;
     imageFileUrl: string;
+    equipmentList: Equipment[];
+    totalReviews: string;
+    technologies: Technology[];
     printSpeedFilament: string;
-    printSpeedPowder: string;
     printSpeedLiquid: string;
+    printSpeedMetalPowder: string;
+    printSpeedNylonPowder: string;
 };
 
 export type Equipment = {
@@ -21,6 +25,16 @@ export type Equipment = {
     imageFileUrl: string;
     manufacturerId: string;
     printSpeed?: string;
+};
+
+export type Technology = {
+    technologyId: string;
+    manufacturerId: string;
+    material: string;
+    description: string;
+    colorValue: string;
+    imageUrl: string;
+    pricePerHour: string;
 };
 
 export type InitCompany = {

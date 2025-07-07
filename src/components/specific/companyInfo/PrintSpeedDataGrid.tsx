@@ -12,11 +12,12 @@ import { convertImageUrlToFile } from "../../../utils/convertUrlToFile";
 
 const PrintSpeedDataGrid = (props: { company: Company; setData: React.Dispatch<React.SetStateAction<Company | undefined>> }) => {
     const { company, setData } = props;
-    const { printSpeedFilament, printSpeedLiquid, printSpeedPowder } = company;
+    const { printSpeedFilament, printSpeedLiquid, printSpeedMetalPowder, printSpeedNylonPowder } = company;
     const [rows, setRows] = useState<GridRowsProp>([
         { id: "printSpeedFilament", type: "필라멘트", speedPerHour: printSpeedFilament },
-        { id: "printSpeedLiquid", type: "액체", speedPerHour: printSpeedLiquid },
-        { id: "printSpeedPowder", type: "분말", speedPerHour: printSpeedPowder },
+        { id: "printSpeedLiquid", type: "액상 레진", speedPerHour: printSpeedLiquid },
+        { id: "printSpeedNylonPowder", type: "나일론 분말", speedPerHour: printSpeedNylonPowder },
+        { id: "printSpeedMetalPowder", type: "금속 분말", speedPerHour: printSpeedMetalPowder },
     ]);
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const [targetRow, setTargetRow] = useState<GridRowModel | null>(null);
@@ -49,27 +50,32 @@ const PrintSpeedDataGrid = (props: { company: Company; setData: React.Dispatch<R
     const postSpeedData = async (target: GridRowModel | null) => {
         if (target === null) return;
         const manufacturerId = localStorage.getItem("manufacturerId");
+        const excludeKeys = ["id", "imageFileUrl", "productionCount", "rating", "totalReviews", "equipmentList", "technologies"];
 
         const formData = new FormData();
+
         fetch(company.imageFileUrl)
             .then((res) => res.blob())
             .then((blob) => {
                 formData.append("image", blob, "default-image.jpg");
             })
             .catch((err) => console.error("이미지 변환 실패:", err));
-        Object.entries(company).forEach(([key, value]) => {
-            if (key === "imageFileUrl") return;
-            formData.append(key, value);
-        });
-        formData.set(target.id, target.speedPerHour);
 
+        Object.entries(company).forEach(([key, value]) => {
+            if (excludeKeys.includes(key)) return;
+            else formData.append(key, value.toString());
+        });
+
+        // 출력속도 업데이트
+        formData.set(target.id, target.speedPerHour);
         try {
             await newAxios.put(`/api/v1/manufacturers/${manufacturerId}`, formData, {
-                headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
             });
-
-            console.log("Saved successfully");
-            window.location.reload();
+            setData((prev) => ({ ...prev!, [target.id]: target.speedPerHour }));
         } catch (error) {
             console.error("Error saving equipment:", error);
         }

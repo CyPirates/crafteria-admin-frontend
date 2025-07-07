@@ -42,6 +42,10 @@ const EditCompanyInfoPage = () => {
         submittedData.append("address", address);
         submittedData.append("dialNumber", dialNumber);
         submittedData.append("representativeEquipment", equipment);
+        submittedData.append("printSpeedFilament", data.printSpeedFilament);
+        submittedData.append("printSpeedLiquid", data.printSpeedLiquid);
+        submittedData.append("printSpeedMetalPowder", data.printSpeedMetalPowder);
+        submittedData.append("printSpeedNylonPowder", data.printSpeedNylonPowder);
 
         if (image) {
             // 사용자가 업로드한 이미지를 추가

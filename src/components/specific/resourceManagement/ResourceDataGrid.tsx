@@ -246,7 +246,7 @@ const ResourceDataGrid = () => {
         },
         {
             field: "price",
-            headerName: "시간당 가격",
+            headerName: "100mm당 가격",
             width: 160,
             editable: true,
         },

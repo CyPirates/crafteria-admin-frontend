@@ -109,7 +109,7 @@ const PrintSpeedDataGrid = (props: { company: Company; setData: React.Dispatch<R
         },
         {
             field: "speedPerHour",
-            headerName: "출력 속도(mm3/시간)",
+            headerName: "출력 속도(cm3/시간)",
             width: 160,
             editable: true,
         },

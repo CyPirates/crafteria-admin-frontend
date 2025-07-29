@@ -43,7 +43,6 @@ const OrderDataGrid = ({ data, status, onStatusUpdate }: OrderList) => {
                         size="small"
                         onClick={() => {
                             if (selectedOrder) {
-                                localStorage.setItem(`order-${params.row.id}`, JSON.stringify(selectedOrder));
                                 window.open(`/order-detail?orderId=${selectedOrder.orderId}`);
                             }
                         }}
